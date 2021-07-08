@@ -1,0 +1,12 @@
+Source,Quantity,TimeStamp,value
+Receiving,speed,"07/07/2021, 20:36:58",989
+Receiving,torque,"07/07/2021, 20:36:58",920
+Receiving,current,"07/07/2021, 20:36:58",1493
+Receiving,voltage,"07/07/2021, 20:36:58",1277
+Receiving,VFD WH,"07/07/2021, 20:36:58",423
+Receiving,WinTemp1,"07/07/2021, 20:36:58",1340
+Receiving,BearTemp1,"07/07/2021, 20:36:58",233
+Receiving,BearTemp2,"07/07/2021, 20:36:58",1300
+Receiving,GearTemp,"07/07/2021, 20:36:58",1432
+Receiving,GearBearTemp,"07/07/2021, 20:36:58",914
+Receiving,power mech,"07/07/2021, 20:36:58",272

@@ -1,6 +1,10 @@
 import json
 import random
 import datetime
+import csv
+import pandas as pd
+
+test_csv = 'test.csv'
 
 currentDateTime = datetime.datetime.now()
 
@@ -16,7 +20,24 @@ message = {'Source': sourceList,
             'TimeStamp': timeStampList,
             'value': valueList}
 
-
 msg = json.dumps(message)               #Convert dictionary to string
 
-print(msg)
+print(msg, '\n')
+
+newmsg = eval(msg)
+
+print(newmsg)
+
+# columnNames = ["Source", "Quantity", "TimeStamp", "value"]
+
+# with open("test.csv", 'a') as csvFile:
+#         wr = csv.DictWriter(csvFile, fieldnames=columnNames)
+#         wr.writeheader()
+#         for ele in newmsg:
+#             wr.writerow(ele)
+
+df = pd.DataFrame.from_dict(newmsg)
+
+df.to_csv (r'test.csv', index = False, header=True)
+
+print ("Recorded in CSV file")

@@ -11,11 +11,13 @@ client.connect(mqttBroker)                  #Connecting broker to client
 
 #Keep runing infinitely
 while True:
+    currentDateTime = datetime.datetime.now()
+
     #Lists of values
     sourceList = ["Receiving" for n in range (0, 11)]
     quantityList = ["speed", "torque", "current", "voltage", "VFD WH", "WinTemp1",
                     "BearTemp1", "BearTemp2", "GearTemp", "GearBearTemp", "power mech"]
-    timeStampList = [datetime.datetime.now() for n in range (0,11)]
+    timeStampList = [currentDateTime.strftime("%m/%d/%Y, %H:%M:%S") for n in range (0,11)]
     valueList = [random.randint(1,1500) for n in range (0,11)]
 
     #Dictionary to hold values and headers
