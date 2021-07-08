@@ -11,7 +11,7 @@ currentDateTime = datetime.datetime.now()
 sourceList = ["Receiving" for n in range (0, 11)]
 quantityList = ["speed", "torque", "current", "voltage", "VFD WH", "WinTemp1",
                 "BearTemp1", "BearTemp2", "GearTemp", "GearBearTemp", "power mech"]
-timeStampList = [currentDateTime.strftime("%m/%d/%Y, %H:%M:%S") for n in range (0,11)]
+timeStampList = [currentDateTime.strftime("%Y/%m/%d, %H:%M:%S") for n in range (0,11)]
 valueList = [random.randint(1,1500) for n in range (0,11)]
 
 #Dictionary to hold values and headers
@@ -28,6 +28,9 @@ newmsg = eval(msg)
 
 print(newmsg)
 
+
+dateTime = str(currentDateTime.strftime("%Y%m%dT%H%M%S"))+'.csv'
+
 # columnNames = ["Source", "Quantity", "TimeStamp", "value"]
 
 # with open("test.csv", 'a') as csvFile:
@@ -38,6 +41,6 @@ print(newmsg)
 
 df = pd.DataFrame.from_dict(newmsg)
 
-df.to_csv (r'test.csv', index = False, header=True)
+df.to_csv(dateTime, index = False, header=True)
 
 print ("Recorded in CSV file")
