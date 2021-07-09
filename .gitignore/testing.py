@@ -22,11 +22,15 @@ message = {'Source': sourceList,
 
 msg = json.dumps(message)               #Convert dictionary to string
 
+print("Type: ", type(msg), '\n')
+
 print(msg, '\n')
 
 newmsg = eval(msg)
 
-print(newmsg)
+print("Type: ", type(newmsg), '\n')
+
+print(newmsg, '\n')
 
 
 dateTime = str(currentDateTime.strftime("%Y%m%dT%H%M%S"))+'.csv'

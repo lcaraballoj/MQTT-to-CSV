@@ -1,13 +1,9 @@
-import paho mqtt.client as mqtt
+import paho.mqtt.client as mqtt
 import time
 import json
-import random
-import datetime
-import csv
-import pandas as pd
 
 def on_message (client, userdata, message):
-        print ("Received message: ", str(message.payload.decode('utf-8')))
+        print ("Received message: ", json.loads(message.payload.decode('utf-8')))
         if message.retain == 1:
             print("This is a retained message")
 
@@ -20,16 +16,21 @@ client.loop_start()
 client.subscribe(topic = "Test", qos = 1)
 client.on_message = on_message
 
-msg = eval(client.on_message)
-
-fileName = str(currentDateTime.strftime("%Y%m%dT%H%M%S"))+'.csv'
-
-df = pd.DataFrame.from_dict(msg)
-
-df.to_csv(dateTime, index = False, header=True)
-
-print ("Recorded in CSV file")
+print ("Type: ", type(on_message))
 
 time.sleep(300)
 
 client.loop_end()
+
+import paho.mqtt.client as mqtt
+import time
+
+def on_message(client, userdata, message):
+    topic = message.topic
+    msg_decode = str(message.payload.decode('utf-8', 'ignore'))
+    message_handler(client, msg_decode, topic)
+    print ("Message Received")
+
+def message_handler(client, message, topic):
+    data = dict()
+    data = eval(message)
