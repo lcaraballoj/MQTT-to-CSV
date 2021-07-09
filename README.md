@@ -1,10 +1,10 @@
 # MQTT to CSV
 A project to create MQTT messages, send them, read them, and then convert those MQTT messages into individual CSV files that will then be uploaded to the AWS cloud.
 # Index
-1. [The Why](The_Why)
-2. [Background Information](Background_Information)
-3. [Process](Process)
-4. [Resources](Resources)
+1. [The Why](#the-why)
+2. [Background Information](#background-information)
+3. [Process](#process)
+4. [Resources](#resources)
 
 # The Why
 MQTT messages are very common in IoT and converting them to CSV makes them easier to read and sort the data into a database.
