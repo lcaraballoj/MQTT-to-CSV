@@ -1,11 +1,31 @@
 import paho.mqtt.client as mqtt
 import time
-import json
+import csv
+import datetime
+import pandas as pd
 
 def on_message (client, userdata, message):
-        print ("Received message: ", json.loads(message.payload.decode('utf-8')))
-        if message.retain == 1:
-            print("This is a retained message")
+    msg = message.payload.decode('utf-8')
+    print ("Received message: ", msg)
+    # if message.retain == 1:
+    #     print("This is a retained message")
+    print ("Type: ", type(msg), "\n")
+
+    msgDict = eval(msg)
+
+    print ("Type: ", type(msgDict), "\n")
+
+    currentDateTime = datetime.datetime.now()
+    dateTime = str(currentDateTime.strftime("%Y%m%dT%H%M%S"))+'.csv'
+
+    try:
+        df = pd.DataFrame.from_dict(msgDict)
+        df.to_csv (dateTime, index = False, header = True)
+
+        print ("Recorded in CSV file: ", dateTime)
+
+    except ValueError as ve:
+        Print("Wrong type")
 
 mqttBroker = "mqtt.eclipseprojects.io"
 client = mqtt.Client("Device")
