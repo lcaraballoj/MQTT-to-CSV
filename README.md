@@ -24,3 +24,5 @@ A MQTT message is the standard in IoT communication.
 [Converting Dictionary to String](https://www.geeksforgeeks.org/python-convert-dictionary-object-into-string/)
 
 [Python MQTT Messages](http://www.steves-internet-guide.com/mqtt-python-beginners-course/)
+
+[How to setup and use FTP Server in Ubuntu Linux](https://linuxconfig.org/how-to-setup-and-use-ftp-server-in-ubuntu-linux)
