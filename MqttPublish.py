@@ -31,4 +31,5 @@ while True:
     client.publish (topic = "Test", payload = msg, qos = 1, retain = False)     #Publish dictionary
     print(msg)      #See what is happening
 
-    time.sleep(5)
+    time.sleep(1)
+    #time.sleep(5)
