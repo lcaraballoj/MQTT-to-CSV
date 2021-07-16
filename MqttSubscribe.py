@@ -25,7 +25,7 @@ def on_message (client, userdata, message):
         print ("Recorded in CSV file: ", dateTime)
 
     except ValueError as ve:
-        Print("Wrong type")
+        print("Wrong type")
 
 mqttBroker = "mqtt.eclipseprojects.io"
 client = mqtt.Client("Device")
