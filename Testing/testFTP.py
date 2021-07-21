@@ -9,7 +9,7 @@ ftp_server = ftplib.FTP(HOST, USERNAME, PASSWD)
 
 ftp_server.encoding = "utf-8"
 
-filename = "test2.txt"
+filename = "csvTest.csv"
 
 textFile = open(filename, 'rb')
 
