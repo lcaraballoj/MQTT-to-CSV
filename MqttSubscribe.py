@@ -22,10 +22,12 @@ def on_message (client, userdata, message):
     try:
         df = pd.DataFrame.from_dict(msgDict)
         df.to_csv (dateTime, index = False, header = True)
+        
+        send = send_to_ftp(dateTime)
 
         print ("Recorded in CSV file: ", dateTime)
 
-        return dateTime
+        #return dateTime
 
     except ValueError as ve:
         print("Wrong type")
@@ -45,7 +47,6 @@ def send_to_ftp (csv):
     testFile.close()
     ftp_server.quit()
 
-
 mqttBroker = "mqtt.eclipseprojects.io"
 client = mqtt.Client("Device")
 client.connect(mqttBroker)
@@ -57,21 +58,9 @@ client.on_message = on_message
 
 print ("Type: ", type(on_message))
 
-send = send_to_ftp(client.on_message)
+#send = send_to_ftp(client.on_message)
 
 time.sleep(300)
 
 client.loop_stop()
 
-# import paho.mqtt.client as mqtt
-#import time
-#
-#def on_message(client, userdata, message):
-#    topic = message.topic
-#    msg_decode = str(message.payload.decode('utf-8', 'ignore'))
-#    message_handler(client, msg_decode, topic)
-#    print ("Message Received")
-#
-#def message_handler(client, message, topic):
-#    data = dict()
-#    data = eval(message)
