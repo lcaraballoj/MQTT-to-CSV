@@ -1,0 +1,3 @@
+#Copy the lines below and paste into `crontab -e` [You may need to change the file locations]
+@reboot python3 ./MQTT-to-CSV/MqttSubscribe.py &
+@reboot python3 ./MQTT-to-CSV/MqttPublish.py &
