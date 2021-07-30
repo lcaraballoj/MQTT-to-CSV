@@ -62,14 +62,14 @@ def main():
 
         client.loop_start()                                     #Start MQTT loop
 
-        client.subscribe(topic = "Test", qos = 1)               #Subscribe
+        client.subscribe(topic = "Owl", qos = 1)               #Subscribe
         client.on_message = on_message                          #Run function to take in message and perform required actions
 
         print ("Type: ", type(on_message))                      #Debug to print the received message
 
         #send = send_to_ftp(client.on_message)
 
-        time.sleep(8)                                         #Time to wait for a message
+        time.sleep(1)                                         #Time to wait for a message
 
         client.disconnect()
 
@@ -77,3 +77,4 @@ def main():
 
 
 main()
+

@@ -28,8 +28,8 @@ while True:
 
     msg = json.dumps(message)               #Convert dictionary to string
 
-    client.publish (topic = "Test", payload = msg, qos = 1, retain = False)     #Publish dictionary
+    client.publish (topic = "Owl", payload = msg, qos = 1, retain = False)     #Publish dictionary
     print(msg)      #See what is happening
 
-    time.sleep(1)
+    time.sleep(.5)
     #time.sleep(5)
