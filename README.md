@@ -1,5 +1,5 @@
 # MQTT to CSV
-A project to create MQTT messages, send them, read them, and then convert those MQTT messages into individual CSV files that will then be uploaded to the AWS cloud.
+A project to create MQTT messages, send them, read them, and then convert those MQTT messages into individual CSV files that will then be uploaded to a FTP server.
 # Index
 1. [The Why](#the-why)
 2. [Process](#process)
@@ -14,11 +14,13 @@ MQTT is a lightweight publish/subscribe messaging protocol which is used for mac
 MQTT is bi-directiona and can be scaled to work with millions of devices in a reliable way and with many IoT devices, even those connecting over unreliable networks. Messages can also be easily encrypcted increasing the security making MQTT a powerful IoT messaging protocol.
 
 # Process
-1. Create a MQTT broker or use an online one
-2. In `MqttPublish.py` at the top of code edit: `mqttBroker = [MQTT Broker]` and in `MqttSubscribe.py` at the top of the function `def main()` edit: `mqttBroker = [MQTT Broker]` 
-3. In `MqttPublish.py` users can change the data that is being outputted and even import/add functions to read sensor data
-4. In `MqttSubscribe.py` users can choose to output the .csv file to a specific location or to a ftp server
-5. To change the ftp server in `MqttSubscribe` edit this part of the code:
+1. Clone the GitHub repository
+2. In the terminal run `pip install -r requirements.txt` to download the needed libraries
+3. Create a MQTT broker or use an online one
+4. In `MqttPublish.py` at the top of code edit: `mqttBroker = [MQTT Broker]` and in `MqttSubscribe.py` at the top of the function `def main()` edit: `mqttBroker = [MQTT Broker]` 
+5. In `MqttPublish.py` users can change the data that is being outputted and even import/add functions to read sensor data
+6. In `MqttSubscribe.py` users can choose to output the .csv file to a specific location or to a FTP server
+7. To change the ftp server in `MqttSubscribe` edit this part of the code:
     ```
     def send_to_ftp(csv):
       host = [Host Name]
@@ -28,6 +30,81 @@ MQTT is bi-directiona and can be scaled to work with millions of devices in a re
 6. If users want to see their data being sent and received in real time they can download tmux and split the screen and then run both `MqttPublish.py` and `MqttSubscribe.py` and see the data flowing
 
 # Understanding the Code
+## MqttPublish
+This Python script creates the MQTT message and sends it. 
+
+In order for the code to run you need an *MQTT broker* and to understand what the end message is going to look like. This will help when formatting the MQTT message as it will later be converted to a CSV and understanding the desire format is important. 
+
+The first part of the code is there to start the MQTT client by connecting to the broker: 
+```
+mqttBroker = "mqtt.eclipseprojects.io"      #Set broker
+client = mqtt.Client()                      #Set MQTT client
+client.connect(mqttBroker)                  #Connecting broker to client
+```
+The second part of the code is where the message is generated.
+```
+while True:
+    currentDateTime = datetime.datetime.now()
+
+    #Lists of values
+    sourceList = ["Receiving" for n in range (0, 11)]
+    quantityList = ["speed", "torque", "current", "voltage", "VFD WH", "WinTemp1",
+                    "BearTemp1", "BearTemp2", "GearTemp", "GearBearTemp", "power mech"]
+    timeStampList = [currentDateTime.strftime("%m/%d/%Y, %H:%M:%S") for n in range (0,11)]
+    valueList = [random.randint(1,1500) for n in range (0,11)]
+
+    #Dictionary to hold values and headers
+    message = {'Source': sourceList,
+                'Quantity': quantityList,
+                'TimeStamp': timeStampList,
+                'value': valueList}
+
+    msg = json.dumps(message)               #Convert dictionary to string
+
+    client.publish (topic = "Owl", payload = msg, qos = 1, retain = False)     #Publish dictionary
+    print(msg)      #See what is happening
+
+    time.sleep(1)
+```
+  
+To understand this part of the code better it is helpful to understand what the desire outcome in the csv form will look like:
+
+![image](https://user-images.githubusercontent.com/71469786/131067376-8555a127-7363-4ee4-a8bc-8898074daa98.png)
+
+This shows that we need four columns, a header, and then 11 rows (not including the header). 
+
+To start generating the message lets analyze the first part of the while loop, generating the lists of values:
+```
+    sourceList = ["Receiving" for n in range (0, 11)]
+    quantityList = ["speed", "torque", "current", "voltage", "VFD WH", "WinTemp1",
+                    "BearTemp1", "BearTemp2", "GearTemp", "GearBearTemp", "power mech"]
+    timeStampList = [currentDateTime.strftime("%m/%d/%Y, %H:%M:%S") for n in range (0,11)]
+    valueList = [random.randint(1,1500) for n in range (0,11)]
+```
+
+This part of the Python script generates a list of the rows in column form, so `sourceList = ["Receiving" for n in range (0,11)]` will be this part of the Excel sheet: 
+
+![image](https://user-images.githubusercontent.com/71469786/131067395-3b70635e-6af1-4c0d-bcba-8050b00e4226.png)
+
+The list will print out 11 strings of `"Recieving"`. 
+
+All the other lists `quantityList`, `timeStampList`, and `valueList` provide similar results, but with different values based on the Excel sheet. For `timeStampList` it takes the `currentDateTime`, which is simply a time stamp, from the `datetime` library and `valueList` generates 11 random numbers for its values. 
+
+Now lets take a look at the next section of code, the generation of the dictionary:
+```
+    #Dictionary to hold values and headers
+    message = {'Source': sourceList,
+                'Quantity': quantityList,
+                'TimeStamp': timeStampList,
+                'value': valueList}
+```
+
+This part of the code takes the lists we created above and uses them to create a key, value pair which is necessary for a dictionary.
+
+The number of keys matches the number of columns that we want, so the Excel file we are trying to replicate has 4 columns, thus we have 4 keys, each matching the value of the columns in the Excel. Each key is attached to one of the lists that we generated above and this is an example of what the dictionary will look like, keep in mind that the datetime and values will be different each time.
+
+``
+
 
 # Resources
 [Converting to CSV File](https://www.datasciencelearner.com/convert-python-dict-to-csv-implementation/)
