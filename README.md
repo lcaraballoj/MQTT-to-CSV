@@ -3,7 +3,8 @@ A project to create MQTT messages, send them, read them, and then convert those 
 # Index
 1. [The Why](#the-why)
 2. [Process](#process)
-3. [Resources](#resources)
+3. [Understanding the Code](#understanding-the-code)
+4. [Resources](#resources)
 
 # The Why
 MQTT messages are very common in IoT and converting them to CSV makes them easier to read and sort the data into a database.
@@ -25,6 +26,8 @@ MQTT is bi-directiona and can be scaled to work with millions of devices in a re
       passwd = [Password]
     ```
 6. If users want to see their data being sent and received in real time they can download tmux and split the screen and then run both `MqttPublish.py` and `MqttSubscribe.py` and see the data flowing
+
+# Understanding the Code
 
 # Resources
 [Converting to CSV File](https://www.datasciencelearner.com/convert-python-dict-to-csv-implementation/)
