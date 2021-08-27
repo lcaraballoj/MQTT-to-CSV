@@ -103,7 +103,13 @@ This part of the code takes the lists we created above and uses them to create a
 
 The number of keys matches the number of columns that we want, so the Excel file we are trying to replicate has 4 columns, thus we have 4 keys, each matching the value of the columns in the Excel. Each key is attached to one of the lists that we generated above and this is an example of what the dictionary will look like, keep in mind that the datetime and values will be different each time.
 
-``
+```
+{'Source': ['Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving'], 'Quantity': ['speed', 'torque', 'current', 'voltage', 'VFD WH', 'WinTemp1', 'BearTemp1', 'BearTemp2', 'GearTemp', 'GearBearTemp', 'power mech'], 'TimeStamp': ['08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49'], 'value': [1103, 160, 1046, 1215, 19, 652, 275, 74, 425, 647, 1394]}
+```
+
+We can see that it simply attaches all 11 values from the lists we generated above to the key we associated the lists with. So, `'Source': sourceList` generated `'Source': ['Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving']`. 
+
+Now looking at the last part of the code
 
 
 # Resources
