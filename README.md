@@ -129,6 +129,77 @@ We convert the dictionary type into a string type in order to send it as an MQTT
 After doing this we must publish the message to the client using the broker. The topic can be changed, but make sure that it is the **same** in both `MqttSubscribe.py` and `MqttPublish.py`. We also print the message, so we see the dictionary, just to as a confirmation that everything went through, and then `time.sleep(1)` pauses the script for one second and then it continues until the program is canceled. 
 
 ## MqttSubscribe
+This Python script subscribes, or receives, the messages that are being published, sent, from the `MqttPublish.py` script.
+
+Just like with `MqttPublish.py` a *MQTT broker* is needed as well as a `FTP server` to save the csv files to. 
+
+This script is made up of three functions, so let's look at the first function **`send_to_ftp(csv)`**: 
+```
+def send_to_ftp (csv):
+    host = '127.0.0.1'          #Define host
+    username = 'ftpuser'        #Username for server
+    passwd = 'owl'              #Password for server
+
+    ftp_server = ftplib.FTP(host, username, passwd)     #Define FTP Server
+    ftp_server.encoding = "utf-8"                       #Define type of data encoding of network
+
+    testFile = open(csv, 'rb')                          #Open file
+
+    ftp_server.storbinary("STOR %s" %csv, testFile)     #Store file data in FTP Server
+
+    testFile.close()            #Close file
+    ftp_server.quit()           #End user session
+```
+
+This function will send the received message to the FTP server. We are looking at this one first because this function is called within the function that reads the received MQTT message. 
+
+The information for the ftp server, `host`, `username`, `passwd` may be different for each user, so be sure to coordinate logins. 
+The next two lines of code are there to take actually connect to the FTP server using the `host`, `username`, and `passwd` infromation provided and then defines the type of data encoding. 
+
+The next line of code `testFile = open(csv, 'rb)` takes a csv file and opens it and read it in binary mode, saving it under the temporary variable name `testFile`. 
+`ftp_server.storbinary("STOR %s" %csv, testFile)` then stores that information in the FTP server.
+
+The next two lines of code simply close the file that is being read and then ends the FTP server session.
+
+The second function **`msg(client, userdata, message)`**:
+```
+def on_message (client, userdata, message):
+    msg = message.payload.decode('utf-8')               #Decode MQTT Message
+    print ("Received message: ", msg)                   #Message receipt
+    #print ("Type: ", type(msg), "\n")                   #Debug to see original message type
+            
+    msgDict = eval(msg)                                 #Convert MQTT Message to dictionary                               
+    #print ("Type: ", type(msgDict), "\n")               #Debug to see new message type
+
+    currentDateTime = datetime.datetime.now()                           #Get current date and time
+    dateTime = str(currentDateTime.strftime("%Y%m%dT%H%M%S"))+'.csv'    #Create filename for csv
+    #p = Path("./MQTT-to-CSV")
+    
+    #Try to write the dictonary to a csv file
+    try:
+        df = pd.DataFrame.from_dict(msgDict)                            #Define the dataframes
+        #df.to_csv (Path(p, dateTime, index = False, header = True)
+        df.to_csv(dateTime, index = False, header =  True)              #Write dataframes to csv
+
+        send = send_to_ftp(dateTime)                                    #Send the csv file to a FTPS
+
+        print ("Recorded in CSV file: ", dateTime)                      #Confirming message is sent
+
+        #return dateTime
+```
+Is there to receive the message, covert it to a dictionary to be written as a csv, creates the csv file name, and then calls `send_to_ftp` to send it to the FTP server.
+
+Let's breakdown this part of the code as it is what actually creates the csv file, though unlike `sent_to_ftp` much of this code should not need to be adjusted. 
+
+The first couple lines of the function receives the MQTT message and confirms receipt of the message by printing the message in the terminal.
+
+In order for us to write the MQTT message to a csv file we must convert the message into a dictionary, `msgDict = eval(msg)` so that we can utilize the [Pandas](https://pypi.org/project/pandas/) functions. 
+
+We then need to assign a filename to the csv file we will generate. In this case we are just using the time stamp as a filename for the csv file. We do this by utilizing the datetime library and then formating it so that it will display the year, month, day, and then time, hours, minutes, and then seconds. 
+
+The next 
+
+
 
 # Resources
 [Converting to CSV File](https://www.datasciencelearner.com/convert-python-dict-to-csv-implementation/)
