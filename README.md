@@ -166,39 +166,99 @@ The second function **`msg(client, userdata, message)`**:
 def on_message (client, userdata, message):
     msg = message.payload.decode('utf-8')               #Decode MQTT Message
     print ("Received message: ", msg)                   #Message receipt
-    #print ("Type: ", type(msg), "\n")                   #Debug to see original message type
+    print ("Type: ", type(msg), "\n")                   #Debug to see original message type
             
     msgDict = eval(msg)                                 #Convert MQTT Message to dictionary                               
-    #print ("Type: ", type(msgDict), "\n")               #Debug to see new message type
+    print ("Type: ", type(msgDict), "\n")               #Debug to see new message type
 
     currentDateTime = datetime.datetime.now()                           #Get current date and time
     dateTime = str(currentDateTime.strftime("%Y%m%dT%H%M%S"))+'.csv'    #Create filename for csv
-    #p = Path("./MQTT-to-CSV")
     
     #Try to write the dictonary to a csv file
     try:
         df = pd.DataFrame.from_dict(msgDict)                            #Define the dataframes
-        #df.to_csv (Path(p, dateTime, index = False, header = True)
         df.to_csv(dateTime, index = False, header =  True)              #Write dataframes to csv
 
         send = send_to_ftp(dateTime)                                    #Send the csv file to a FTPS
 
         print ("Recorded in CSV file: ", dateTime)                      #Confirming message is sent
 
-        #return dateTime
+    #Excepting to handle the wrong data type
+    except ValueError as ve:
+        print("Wrong type")
 ```
 Is there to receive the message, covert it to a dictionary to be written as a csv, creates the csv file name, and then calls `send_to_ftp` to send it to the FTP server.
 
-Let's breakdown this part of the code as it is what actually creates the csv file, though unlike `sent_to_ftp` much of this code should not need to be adjusted. 
+Let's breakdown this part of the code as it is what actually creates the csv file, though unlike `sent_to_ftp` much of this code should not need to be adjusted too much. 
 
-The first couple lines of the function receives the MQTT message and confirms receipt of the message by printing the message in the terminal.
 
-In order for us to write the MQTT message to a csv file we must convert the message into a dictionary, `msgDict = eval(msg)` so that we can utilize the [Pandas](https://pypi.org/project/pandas/) functions. 
+The first couple of lines:
+```
+    msg = message.payload.decode('utf-8')               #Decode MQTT Message
+    print ("Received message: ", msg)                   #Message receipt
+```
+receives the MQTT message and confirms receipt of the message by printing the message in the terminal.
 
-We then need to assign a filename to the csv file we will generate. In this case we are just using the time stamp as a filename for the csv file. We do this by utilizing the datetime library and then formating it so that it will display the year, month, day, and then time, hours, minutes, and then seconds. 
+Then in order for us to write the MQTT message to a csv file we must convert the message into a dictionary, `msgDict = eval(msg)` so that we can utilize the [Pandas](https://pypi.org/project/pandas/) functions. 
 
-The next 
+We then need to assign a filename to the csv file we will generate. 
+```
+   currentDateTime = datetime.datetime.now()                           #Get current date and time
+   dateTime = str(currentDateTime.strftime("%Y%m%dT%H%M%S"))+'.csv'    #Create filename for csv
+```
+In this case we are just using a time stamp as a filename for the csv file. We do this by utilizing the datetime library and then formating it so that it will display the year, month, day, and then time, hours, minutes, and then seconds. 
 
+The next part of the code uses a try and except block in order to prevent the program from crashing if a wrong type is detected. 
+In the try block we have: 
+```
+        df = pd.DataFrame.from_dict(msgDict)                            #Define the dataframes
+        df.to_csv(dateTime, index = False, header =  True)              #Write dataframes to csv
+
+        send = send_to_ftp(dateTime)                                    #Send the csv file to a FTPS
+
+        print ("Recorded in CSV file: ", dateTime)                      #Confirming message is sent
+
+```
+
+Which takes the dictionary and writes it to dataframes, a funtion of the [Pandas](https://pypi.org/project/pandas/) library, and then takes those dataframes and writes it to a csv file using the filename we generated `dateTime`. We then send it to the FTP server and send a confirmation that the message has been recored. 
+
+The except block: 
+```
+    except ValueError as ve:
+        print("Wrong type")
+```
+The Python ValueError exception is raised when the function receivest the wrong data type. It allows the code to keep running even if the wrong type is accepted whihc prevents crashes.
+
+The third funtion is the **`main()`** function: 
+```
+def main():
+    while True: 
+        mqttBroker = "mqtt.eclipseprojects.io"                  #Server to recieve messages
+        #mqttBroker = '10.2.0.4'
+        client = mqtt.Client("Device")                          #Connect to MQTT Client
+        client.connect(mqttBroker)                              #Connect client to broker
+
+        client.loop_start()                                     #Start MQTT loop
+        
+        #client.connect(mqttBroker)
+
+        client.subscribe(topic = "Owl", qos = 1)               #Subscribe
+        client.on_message = on_message                          #Run function to take in message and perform required actions
+
+        print ("Type: ", type(on_message))                      #Debug to print the received message
+
+        #send = send_to_ftp(client.on_message)
+
+        time.sleep(1)                                         #Time to wait for a message
+
+        client.disconnect()
+
+        client.loop_forever()                                   #Keep looping
+```
+
+The first several lines are the same as the first part of **`MqttPublish.py`**.
+
+The next part creates a loop to continue to run the code to receive the messages, but we first need to subscribe to the client using the topic that we defined in **`MqttPublish.py`**. We then use the message received and use that as the parameter to run the `on_message` function. From here the rest of the code runs, and then the script is paused for a second before running again and will only stop when canceled.
 
 
 # Resources
