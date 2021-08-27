@@ -16,7 +16,7 @@ MQTT is bi-directiona and can be scaled to work with millions of devices in a re
 # Process
 1. Clone the GitHub repository
 2. In the terminal run `pip install -r requirements.txt` to download the needed libraries
-3. Create a MQTT broker or use an online one
+3. Create a MQTT broker or use an online one. (In this example an [online Mosquitto Eclipse broker](https://mqtt.eclipseprojects.io/) is used which limits the amount of messages that can be sent so creating a local one for use is ideal.)
 4. In `MqttPublish.py` at the top of code edit: `mqttBroker = [MQTT Broker]` and in `MqttSubscribe.py` at the top of the function `def main()` edit: `mqttBroker = [MQTT Broker]` 
 5. In `MqttPublish.py` users can change the data that is being outputted and even import/add functions to read sensor data
 6. In `MqttSubscribe.py` users can choose to output the .csv file to a specific location or to a FTP server
@@ -104,13 +104,27 @@ This part of the code takes the lists we created above and uses them to create a
 The number of keys matches the number of columns that we want, so the Excel file we are trying to replicate has 4 columns, thus we have 4 keys, each matching the value of the columns in the Excel. Each key is attached to one of the lists that we generated above and this is an example of what the dictionary will look like, keep in mind that the datetime and values will be different each time.
 
 ```
-{'Source': ['Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving'], 'Quantity': ['speed', 'torque', 'current', 'voltage', 'VFD WH', 'WinTemp1', 'BearTemp1', 'BearTemp2', 'GearTemp', 'GearBearTemp', 'power mech'], 'TimeStamp': ['08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49'], 'value': [1103, 160, 1046, 1215, 19, 652, 275, 74, 425, 647, 1394]}
+{'Source': ['Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving'], 'Quantity':
+['speed', 'torque', 'current', 'voltage', 'VFD WH', 'WinTemp1', 'BearTemp1', 'BearTemp2', 'GearTemp', 'GearBearTemp', 'power mech'], 'TimeStamp': ['08/27/2021, 
+03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 
+03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49', '08/27/2021, 03:40:49'], 'value': [1103, 160, 1046, 1215, 19, 652, 275, 74, 425, 647, 1394]}
 ```
 
 We can see that it simply attaches all 11 values from the lists we generated above to the key we associated the lists with. So, `'Source': sourceList` generated `'Source': ['Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving']`. 
 
-Now looking at the last part of the code
+Now looking at the last part of the code, this is what formats the MQTT message and sends it.
+```
+    msg = json.dumps(message)               #Convert dictionary to string
 
+    client.publish (topic = "Owl", payload = msg, qos = 1, retain = False)     #Publish dictionary
+    print(msg)      #See what is happening
+
+    time.sleep(1)
+```
+
+We conver the dictionary type into a string type in order to send it as an MQTT message. This is because MQTT messages do not accept dictionary types, but do accept string types, so we simply have to make the dictionary a string, which will not affect the overall structure of the dictionary we already generated.
+
+After doing this we must publish the message to the client using the broker. The topic can be changed, but make sure that it is the **same** in both `MqttSubscribe.py` and `MqttPublish.py`. We also print the message, so we see the dictionary, just to as a confirmation that everything went through, and then `time.sleep(1)` pauses the script for one second and then it continues until the program is canceled. 
 
 # Resources
 [Converting to CSV File](https://www.datasciencelearner.com/convert-python-dict-to-csv-implementation/)
