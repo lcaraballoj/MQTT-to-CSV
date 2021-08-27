@@ -4,7 +4,9 @@ A project to create MQTT messages, send them, read them, and then convert those 
 1. [The Why](#the-why)
 2. [Process](#process)
 3. [Understanding the Code](#understanding-the-code)
-4. [Resources](#resources)
+    - [MqttPublish](##mqttpublish)
+    - [MqttSubscribe](##mqttsubscribe)
+5. [Resources](#resources)
 
 # The Why
 MQTT messages are very common in IoT and converting them to CSV makes them easier to read and sort the data into a database.
@@ -122,9 +124,11 @@ Now looking at the last part of the code, this is what formats the MQTT message 
     time.sleep(1)
 ```
 
-We conver the dictionary type into a string type in order to send it as an MQTT message. This is because MQTT messages do not accept dictionary types, but do accept string types, so we simply have to make the dictionary a string, which will not affect the overall structure of the dictionary we already generated.
+We convert the dictionary type into a string type in order to send it as an MQTT message. This is because MQTT messages do not accept dictionary types, but do accept string types, so we simply have to make the dictionary a string, which will not affect the overall structure of the dictionary we already generated.
 
 After doing this we must publish the message to the client using the broker. The topic can be changed, but make sure that it is the **same** in both `MqttSubscribe.py` and `MqttPublish.py`. We also print the message, so we see the dictionary, just to as a confirmation that everything went through, and then `time.sleep(1)` pauses the script for one second and then it continues until the program is canceled. 
+
+## MqttSubscribe
 
 # Resources
 [Converting to CSV File](https://www.datasciencelearner.com/convert-python-dict-to-csv-implementation/)
