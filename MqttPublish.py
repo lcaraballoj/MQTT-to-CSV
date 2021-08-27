@@ -6,6 +6,7 @@ import datetime
 import json
 
 mqttBroker = "mqtt.eclipseprojects.io"      #Set broker
+#mqttBroker = '10.2.0.4'
 client = mqtt.Client()                      #Set MQTT client
 client.connect(mqttBroker)                  #Connecting broker to client
 
