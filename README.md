@@ -103,7 +103,7 @@ Now lets take a look at the next section of code, the generation of the dictiona
 
 This part of the code takes the lists we created above and uses them to create a key, value pair which is necessary for a dictionary.
 
-The number of keys matches the number of columns that we want, so the Excel file we are trying to replicate has 4 columns, thus we have 4 keys, each matching the value of the columns in the Excel. Each key is attached to one of the lists that we generated above and this is an example of what the dictionary will look like, keep in mind that the datetime and values will be different each time.
+The number of keys matches the number of desire columns, so the Excel file we are trying to replicate has 4 columns, thus we have 4 keys, each matching the value of the columns in the Excel. Each key is attached to one of the lists that we generated above and this is an example of what the dictionary will look like, keep in mind that the datetime and values will be different each time.
 
 ```
 {'Source': ['Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving', 'Receiving'], 'Quantity':
