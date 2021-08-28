@@ -4,8 +4,8 @@ A project to create MQTT messages, send them, read them, and then convert those 
 1. [The Why](#the-why)
 2. [Process](#process)
 3. [Understanding the Code](#understanding-the-code)
-    - [MqttPublish](#mqttpublish)
-    - [MqttSubscribe](#mqttsubscribe)
+    1. [MqttPublish](#mqttpublish)
+    2. [MqttSubscribe](#mqttsubscribe)
 5. [Resources](#resources)
 
 # The Why
